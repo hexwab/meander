@@ -1,0 +1,136 @@
+<!doctype html>
+<html ng-app="meander" charset=utf8>
+<head>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.3/angular.js"></script>
+  <script src="meander.js"></script>
+  <script src="presets.js" charset=utf8></script>
+  <link rel="stylesheet" href="meander.css">
+  <title>Meander</title>
+</head>
+<body ng-controller="edit">
+<canvas id="meander" meander></canvas>
+<div id="edit">
+  <div>
+    <select id=presets ng-options="p.name for p in presets" ng-model="preset">
+    </select>
+  </div>
+
+  <div>
+    <label for=base>Base sides</label>
+    <input id=base type=number min=1 max=99 step=1 value=1 required ng-model="nsides">
+  </div>
+
+      <div class=box><div>Motif</div>
+	<div>
+	  <svg id="motif">
+	    <g transform="translate(50,100) scale(100,-100)">
+	      <path class="line" ng-attr-d="{{draw_motif()}}"></path>
+	      <circle
+		 class="point"
+		 r=0.05
+		 ng-repeat="p in points"
+		 ng-attr-dragpoint="{{$index>0 && $index<points.length-1}}"
+		 ng-class="{selected: $parent.selectedPoint==$index }"
+		 ng-click="$parent.selectedPoint=$index"
+		 ng-attr-cx="{{p[0]}}"
+		 ng-attr-cy="{{p[1]}}"
+		 ></circle>
+	      <!-- a bigger, hidden circle so that the selected point can be
+		   easily dragged -->
+	      <circle
+		 ng-repeat="p in points"
+		 ng-if="$parent.selectedPoint==$index && $index>0 && $index<points.length-1"
+		 ng-attr-dragpoint="{{$index>0 && $index<points.length-1}}"
+		 r=0.2
+		 class="fakepoint"
+		 ng-attr-cx="{{p[0]}}"
+		 ng-attr-cy="{{p[1]}}"
+		 ></circle>
+	    </g>
+	  </svg>
+	</div>
+<!--	<div><label for=current>Current point</label>
+	  <input id=current type=number min=0 max="{{points.length-1}}" ng-model="selectedPoint"></input>
+	</div>
+-->
+	<div>
+	  <button ng-click="insertPoint(selectedPoint)">Insert</button>
+	  <button ng-click="deletePoint(selectedPoint)" ng-disabled="!(selectedPoint>0 && selectedPoint<points.length-1)">Delete</button>
+	</div>
+	<table>
+	    <thead>
+	      <tr>
+		<th>X</th>
+		<th>Y</th>
+		<th>Angle</th>
+		<th>Length</th>
+		<th></th>
+	      </tr>
+	    </thead>
+	    <tbody>
+	      <tr class=row ng-repeat="p in points" ng-class="{selected: $parent.selectedPoint==$index}">
+		<td ng-click="$parent.selectedPoint=$index" class=xentry>
+		  <!--<span ng-hide="p.editing" ng-dblclick="p.editing=true">{{p[0].toFixed(5)}}</span>
+		  <input class=editbox ng-show="p.editing" ng-model="p[0]" ng-blur="p.editing=false; p[0]=.4" autofocus></input>-->
+		  <editable value="p[0]" prec=5></editable>
+		</td>
+		<td ng-click="$parent.selectedPoint=$index" class=yentry>
+		  <editable value="p[1]" prec=5></editable>
+		<!--  {{p[1].toFixed(5)}} -->
+		</td>
+		<td ng-if="$index<points.length-1" class=angentry ng-class="{disconnected: !connected[$index]}">
+		  {{angle($index).toFixed(3)}}
+		</td>
+		<td ng-if="$index<points.length-1" class=lenentry ng-class="{disconnected: !connected[$index]}">
+		  {{length($index).toFixed(5)}}
+		</td>
+		<td ng-if="$index<points.length-1" class=connentry>
+		  <input type=checkbox ng-model="connected[$index]" id={{"conn"+$index}} class=connbox>
+		  <label for={{"conn"+$index}}></label>
+		</td>
+	      </tr>
+	    </tbody>
+	</table>
+	<!--
+	<table>
+	  <tr>
+	    <td>
+	      <input type=checkbox id=xbutton>X</input>
+	    </td>
+	    <td>
+	      <input type=text id=x ng-model="points[selectedPoint][0]">
+	    </td>
+	    <td>
+	      <button id=anglebutton>Angle</button>
+	    </td>
+	    <td><input id=angle type=number value=0 disabled></td>
+	  </tr>
+	  <tr>
+	    <td>
+	      <button id=ybutton>Y</button>
+	    </td>
+	    <td>
+	      <input type=text id=y ng-model="points[selectedPoint][1]">
+	    </td>
+	    <td>
+	      <button id=lengthbutton>Length</button>
+	    </td>
+	    <td>
+	      <input id=length type=number value=0 disabled>
+	    </td>
+	  </tr>
+	</table>
+	-->
+	</div>
+      <input id=maxiter type=checkbox ng-model="maxiter">
+      <label for=maxiter>Maximum iterations </label><input id=iter type=number min=0 max=999 step=1required ng-model="iter" ng-disabled="!maxiter">
+      <div>{{count}} points</div>
+<!--  <div>selected point: {{selectedPoint}}</div>-->
+  
+<!--  <div ng-repeat="p in points">
+    <div class="point" ng-class="{selected: selectedPoint==$index}" ng-click="$parent.selectedPoint=$index">{{p[0] + "," + p[1]}}</div>
+  </div>
+-->
+</div>
+</body>
+</html>

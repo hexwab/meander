@@ -1,0 +1,145 @@
+.fakepoint {
+    fill: rgba(0,0,0,0);
+    z-index: -1;
+}
+.fakepoint:hover {
+    cursor: pointer;
+}    
+#motif {
+    width: 100%;
+    height: 200px;
+    /*border: 1px solid black;*/
+}
+#motif .line {
+    fill: none;
+    stroke: black;
+    stroke-width: 0.01;
+}
+#motif .point {
+    fill: black;
+}
+body.busy {
+    cursor: wait;
+}
+#motif .point:hover {
+    cursor: pointer;
+}
+#motif .point.selected {
+    fill: red;
+}
+
+body {
+    overflow: hidden;
+    font-family: sans-serif;
+    width:100%;
+    height: 100%;
+    margin: 0;
+}
+#c {
+    position: absolute;
+    z-index: -1;
+    width: 100%;
+    height: 100%;
+}
+
+#edit {
+    display: inline-block;
+    float: right;
+    padding: .5em;
+    margin-right: .7em;
+    margin-top: 0.3em;
+    /*
+    border-radius: 1em;
+    background: #ccc;
+    box-shadow: .3em .3em .3em black;
+    border-left: .2em solid #eee; border-top: .2em solid #eee; */
+    border: 3px solid black;
+    border-radius: 1em;
+    background: rgba(255,255,255,.9);
+    max-width: min-content;
+}
+.box {
+    /* border: 3px ridge #fff;*/
+    border: 1px solid black;
+       position: relative;
+       margin-top: .5em;
+       padding: .5em .2em .3em;
+       padding-top: .5em; padding-left: .2em; padding-right: .2em; padding-bottom: .3em;
+     }
+.box > div:first-child {
+    position: absolute;
+    top: -.7em;
+    left: .1em;
+    padding: .1em;
+    /*background: #ccc;*/
+    background: white;
+    font-weight: 700;
+}
+input[type=number] {
+    width: 3em;
+}
+
+.angentry, .lenentry, .connentry {
+    position: relative; top: .5em;
+}
+.angentry.disconnected, .lenentry.disconnected {
+    color: gray;
+}
+.row.selected td.xentry,.row.selected td.yentry {
+/*    border: 2px solid red;*/
+    background: #f44;
+}
+.row td.xentry,.row td.yentry {
+    cursor: cell;
+}
+.row.selected td.xentry {
+    border-left: none;
+}
+.row.selected td.yentry {
+    border-left: none;
+}
+.row td {
+    text-align: right;
+}
+
+canvas#meander { position: absolute; z-index: -1; width: 100%; height: 100% }
+
+input[type=checkbox] {
+    max-width: min-content;
+}
+input[type=checkbox].connbox {
+    display:none;
+}
+ 
+input[type=checkbox].connbox + label
+{
+    background: url(disconnected.svg) content-box center no-repeat;
+    width: 36px;
+    height: 11px;
+    display: inline-block;
+    border: 2px solid transparent;
+    border-radius: 3px;
+}
+input[type=checkbox].connbox + label:hover {
+    border: 2px inset gray;
+}
+
+input[type=checkbox].connbox:checked + label {
+    background: url(connected.svg) content-box center no-repeat;
+}
+td.xentry,td.yentry,td.angentry,td.lenentry { margin: 2px; width:4em;  position: relative;}
+table { border-spacing: 0; }
+
+tr > th {
+    border-bottom: 1px solid black;
+}
+input.editbox {
+    position: absolute;
+    padding: .2em;
+    top: -.5em;
+    left: -.5em;
+    right: .5em;
+    bottom: -.5em;
+    background: white;
+    z-index: 99;
+}
