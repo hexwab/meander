@@ -8,13 +8,36 @@
   <title>Meander</title>
 </head>
 <body ng-controller="edit">
-<canvas id="meander" meander></canvas>
+  <canvas id="meander" meander></canvas>
+<modal open="presetchooser">
+<!--  <div class="close" ng-click="presetchooser=false;">
+    &#xd7;
+  </div>-->
+  <div class="scroller">
+    <div class="preset" ng-repeat="p in presets">
+      <canvas preset p="p" ng-click="$parent.$parent.$parent.preset=p;$parent.$parent.$parent.presetchooser=false;"></canvas>
+      <div class="pname">{{p.name}}</div>
+    </div>
+  </div>
+</modal>
+<modal open="about">
+  <div class="about">
+    <canvas preset p="{baseline: 1, points: [[0,0], [0.4,0.2], [0.6,-0.2], [1,0]], connected: [true,true,true]}"></canvas>
+    <h1>Meander</h1>
+    <h2>An interactive fractal plotter</h2>
+    <div>&copy; 2004-2015 Tom Hargreaves &lt;hex@freezone.co.uk&gt;</div>
+    <div><a href="https://github.com/hexwab/meander">https://github.com/hexwab/meander</a></div>
+  </div>
+</modal>
 <div id="edit">
-  <div>
+<!--  <div>
     <select id=presets ng-options="p.name for p in presets" ng-model="preset">
     </select>
   </div>
-
+-->
+  <div>
+    <button ng-click="presetchooser=true">Presets...</button>
+    <button ng-click="about=true">About...</button>
   <div>
     <label for=base>Base sides</label>
     <input id=base type=number min=1 max=99 step=1 value=1 required ng-model="nsides">

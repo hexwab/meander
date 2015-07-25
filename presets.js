@@ -186,7 +186,7 @@ var presets = [
   baseline: 1,
   iterations: 6,
   points: [[0,0], [0.3333333333333333,0], [0.25,0.43301270189221932338], [0.41666666666666666,0.14433756729740644111], [0.75,0.43301270189221932338], [0.58333333333333333,0.14433756729740644111], [0.25,-0.43301270189221932338], [0.416666666666666667,-0.14433756729740644111], [0.75,-0.43301270189221932338], [0.583333333333333333333,-0.14433756729740644111], [1,0], [1.33333333333333333,0], [1,0], [0.6666666666666666667,0], [1,0]],
-  connected: [true,false,true,false,true,false,true,false,true,false,true,false,true,true]
+  connected: [true,false,true,false,true,false,true,false,true,false,true,false,true,false]
 },
 {
   name: "Fudgeflake",
@@ -449,10 +449,10 @@ var presets = [
 },
 {
   name: "Peano hexagon",
-  baseline: 1,
+  baseline: 3,
   iterations: 8,
   points: [[0,0], [0.5,0], [0.25,-0.4330127018922], [0.75,0.4330127018922], [0.5,0], [1,0]],
-  connected: [true,true,true,true,true]
+  connected: [true,true,false,true,true]
 },
 {
   name: "Peano square",

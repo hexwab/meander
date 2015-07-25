@@ -97,10 +97,9 @@
 	C.stroke();
 	return count;
     }
-
-    function redraw(el, ctx, base, iter, p, c) {
-	//	ctx.fillStyle="blue";
-	//console.log(ctx);
+    
+    function redraw(el, ctx, xorigin, yorigin, xscale, yscale, base, iter, p, c) {
+	//ctx.fillStyle="blue";
 	ctx.fillRect(0,0,el.width,el.height); /* clear */
 	var pi=Math.PI;
 	var points = [];
@@ -143,6 +142,15 @@
 	return count;
     }
 
+    function init(el, ctx) {
+	var dpr = window.devicePixelRatio;
+	el.width = el.clientWidth * dpr;
+	el.height = el.clientHeight * dpr;
+	ctx.fillStyle = "white";
+	ctx.strokeStyle = "black";
+	ctx.fillRect(0,0,el.width,el.height); /* clear */
+    }
+    
     var module = angular.module("meander", [])
 	.controller("edit", function($scope) {
 	    $scope.iter = 1;
@@ -284,13 +292,7 @@
 
 		    function resize(e) {
 			//console.log("resize");
-			var dpr = window.devicePixelRatio;
-			el.width = el.clientWidth * dpr;
-			el.height = el.clientHeight * dpr;
-			ctx.fillStyle = "white";
-			ctx.strokeStyle = "black";
-			ctx.fillRect(0,0,el.width,el.height); /* clear */
-
+			init(el, ctx);
 			redr();
 		    }
 
@@ -343,13 +345,13 @@
 		    }
 		    
 		    function redr() {
-			scope.count = redraw(el, ctx, scope.nsides, scope.maxiter ? scope.iter : Infinity, scope.points, scope.connected);
-			scope.$apply();
+			scope.count = redraw(el, ctx, xorigin, yorigin, xscale, yscale, scope.nsides, scope.maxiter ? scope.iter : Infinity, scope.points, scope.connected);
+			//scope.$apply();
 		    }
 
 		    function load() {
-			console.log(scope);
-			console.log(scope.preset);
+			//console.log(scope);
+			//console.log(scope.preset);
 			scope.iter = scope.preset.iterations;
 			scope.nsides = scope.preset.baseline;
 			scope.points = scope.preset.points;
@@ -412,6 +414,47 @@
 			    }
 			}
 		    });
+		}
+	    };
+	}])
+	.directive('modal', ['$document', function($document) {
+	    return {
+		scope: {
+		    open: '=',
+		},
+		transclude: true,
+		template: '<div class="modal" ng-show="open">' +
+		    '<div class="close" ng-click="open=false">&#xd7;</div>' +
+                    '<ng-transclude></ng-transclude>' +
+                    '</div>',
+		link: function(scope, element, attr) {
+		    scope.open = false;
+		    function esc(e) {
+			if (e.which==27) {
+			    scope.open=false;
+			    scope.$apply();
+			}
+		    }
+		    scope.$watch('open', function(e) {
+			$document[scope.open?'on':'off'](
+			    'keydown', esc);
+		    });
+		}
+	    };
+	}])
+	.directive('preset', ['$document', function($document) {
+	    return {
+		scope: {
+		    p: '='
+		},
+		link: function(scope, element, attr) {
+		    var el = element[0];
+		    var ctx = el.getContext("2d");
+		    console.log(scope);
+		    var p = scope.p;
+		    init(el, ctx);
+		    var sc=el.width/15;
+		    redraw(el, ctx, sc*7, sc*6, sc*2, sc*2, p.baseline, Infinity/*p.iterations*/, p.points, p.connected);
 		}
 	    };
 	}])
