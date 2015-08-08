@@ -349,35 +349,16 @@
 		    }
 
 		    function load() {
-			//console.log(scope);
-			//console.log(scope.preset);
-			scope.iter = scope.preset.iterations;
-			scope.nsides = scope.preset.baseline;
-			scope.points = scope.preset.points;
-
-/*			scope.connected = [];
-			for (var i=0; i<scope.points.length-1; i++) {
-			    scope.connected[i] = !!((scope.preset.connected >> i)&1);
+			if (scope.preset) {
+			    /* clone preset. javascript does not make this easy, sigh */
+			    scope.iter = scope.preset.iterations;
+			    scope.nsides = scope.preset.baseline;
+			    scope.points = JSON.parse(JSON.stringify(scope.preset.points));
+			    scope.connected = scope.preset.connected.slice(0);
+			    scope.preset = null;
 			}
-			console.log(scope.connected, scope.preset.connected);
-*/
-			scope.connected = scope.preset.connected;
 		    }
 
-		    /*
-		    var q=[];
-		    for (var j=0; j<presets.length;j++) {
-			var c= [];
-			var p=presets[j];
-		    for (var i=0; i<p.points.length-1; i++) {
-			c[i] = !!((p.connected >> i)&1);
-		    }
-			q+=JSON.stringify(c)+"\n";
-		    }
-		    console.log("q="+q);
-*/
-
-		    
 		    scope.$watch('points', redr, true);
 		    scope.$watch('connected', redr, true);
 		    scope.$watchGroup(['iter', 'nsides', 'maxiter'], redr);
