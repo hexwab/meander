@@ -24,6 +24,9 @@ body.busy {
 #motif .point:hover {
     cursor: pointer;
 }
+#motif .point.ends {
+    cursor: not-allowed;
+}
 #motif .point.selected {
     fill: red;
 }

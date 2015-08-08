@@ -1,12 +1,4 @@
 (function() {
-    var xscale=100;
-    var yscale=100;
-    
-    var xorigin=300;
-    var yorigin=250;
-    var xscale=100;
-    var yscale=100;
-
     function getcursor(ev, el) {
 	var x, y;
 	if (ev.pageX != undefined && ev.pageY != undefined) {
@@ -20,6 +12,7 @@
 	}
 	x -= el.offsetLeft;
 	y -= el.offsetTop;
+	console.log(ev,x,y);
 	return {x:x,y:y};
     }
 
@@ -160,6 +153,11 @@
 	    $scope.connected = [true,true];
 	    $scope.maxiter = true;
 	    $scope.presets = presets;
+	    $scope.xorigin = 300;
+	    $scope.yorigin= 250;
+	    $scope.xscale = 100;
+	    $scope.yscale = 100;
+
 	    $scope.angle = function(i) {
 		var p = $scope.points;
 		var dx = p[i+1][0]-p[i][0],
@@ -270,10 +268,10 @@
 			p.x *= window.devicePixelRatio;
 			p.y *= window.devicePixelRatio;
 
-			xscale*=zoom;
-			yscale*=zoom;
-			var nxorigin=xorigin*zoom-p.x*(zoom-1);
-			var nyorigin=yorigin*zoom-p.y*(zoom-1);
+			scope.xscale*=zoom;
+			scope.yscale*=zoom;
+			var nxorigin=scope.xorigin*zoom-p.x*(zoom-1);
+			var nyorigin=scope.yorigin*zoom-p.y*(zoom-1);
 			//			console.log("xorigin="+xorigin+" yorigin="+yorigin+" xscale="+xscale+" yscale="+yscale);
 			//var im=ctx.getImageData(0, 0, el.width, el.height);
 			//ctx.fillRect(0,0,el.width,el.height);			
@@ -283,8 +281,8 @@
 			ctx.scale(zoom,zoom);
 			ctx.drawImage(el, 0, 0);
 			ctx.restore();
-			xorigin = nxorigin;
-			yorigin = nyorigin;
+			scope.xorigin = nxorigin;
+			scope.yorigin = nyorigin;
 			setTimeout(redr,10);
 			e.preventDefault();
 			return false;
@@ -339,14 +337,15 @@
 			var x = event.pageX - startX;
 			x *= window.devicePixelRatio;
 			y *= window.devicePixelRatio;
-			xorigin += x;
-			yorigin += y; 
+			scope.xorigin += x;
+			scope.yorigin += y; 
 			redr();
 		    }
 		    
 		    function redr() {
-			scope.count = redraw(el, ctx, xorigin, yorigin, xscale, yscale, scope.nsides, scope.maxiter ? scope.iter : Infinity, scope.points, scope.connected);
-			//scope.$apply();
+			scope.count = redraw(el, ctx, scope.xorigin, scope.yorigin, scope.xscale, scope.yscale, scope.nsides, scope.maxiter ? scope.iter : Infinity, scope.points, scope.connected);
+			/* FIXME: don't call apply from angular callback */
+			scope.$apply();
 		    }
 
 		    function load() {
@@ -399,7 +398,7 @@
 		    scope.$watch('editMode', function() {
 			if (scope.editMode) {
 			    var inp = element.find("input");
-			    setTimeout(function(){inp[0].focus()},0);;
+			    setTimeout(function(){inp[0].focus();inp[0].select();},0);
 			    inp.on('keydown', function(e) {
 				console.log(e);
 				if (e.which==27 || e.which==13) inp[0].blur();
@@ -450,7 +449,6 @@
 		link: function(scope, element, attr) {
 		    var el = element[0];
 		    var ctx = el.getContext("2d");
-		    console.log(scope);
 		    var p = scope.p;
 		    init(el, ctx);
 		    var sc=el.width/15;
